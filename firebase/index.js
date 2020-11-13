@@ -1,5 +1,4 @@
-import user from './user';
+import income from './income';
+import spend from './spend';
 
-export default {
-  user,
-};
+export default {income, spend};

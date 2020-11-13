@@ -7,15 +7,18 @@
  */
 
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView, StyleSheet, Alert, Text, View} from 'react-native';
+import {Alert, View} from 'react-native';
 
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin, statusCodes} from '@react-native-community/google-signin';
 
 import RNExitApp from 'react-native-exit-app';
+import 'react-native-gesture-handler';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 
 import env from './env';
-import firebase from './firebase';
+import {Home} from './views';
 import {SignIn} from './components';
 
 GoogleSignin.configure({
@@ -63,9 +66,10 @@ signInGoogle().catch((err) => {
   );
 });
 
+const Stack = createStackNavigator();
+
 function App() {
   const [user, setUser] = useState(null);
-  const [showSignIn, setShowSignIn] = useState(false);
 
   useEffect(() => {
     let unmounted = false;
@@ -73,16 +77,9 @@ function App() {
       if (user !== null) {
         return subscriber;
       }
-      firebase.user
-        .exists(authUser)
-        .then((isExists) => {
-          if (unmounted) {
-            return subscriber;
-          }
-          console.log(isExists);
-          setShowSignIn(!isExists);
-        })
-        .catch(console.error);
+      if (unmounted) {
+        return subscriber;
+      }
       setUser(authUser);
     });
 
@@ -96,15 +93,16 @@ function App() {
     return <View />;
   }
   return (
-    <SafeAreaView>
-      <SignIn show={showSignIn} />
-      <View>
-        <Text>힝..</Text>
-      </View>
-    </SafeAreaView>
+    <>
+      <NavigationContainer>
+        <Stack.Navigator headerMode="none" initialRouteName="home">
+          <Stack.Screen name="Home">
+            {(props) => <Home {...props} user={user} />}
+          </Stack.Screen>
+        </Stack.Navigator>
+      </NavigationContainer>
+    </>
   );
 }
-
-const styles = StyleSheet.create({});
 
 export default App;
