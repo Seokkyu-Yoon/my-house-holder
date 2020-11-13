@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {createRef, useEffect, useState} from 'react';
 import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 
 import {Pages} from 'react-native-pages';
@@ -41,6 +41,8 @@ function getFormattedShowDate(showDate) {
   return `${getStrYear(showDate)}년 ${getStrMonth(showDate)}월`;
 }
 
+const refPages = createRef();
+
 function App(props) {
   const [today, setToday] = useState(new Date());
   const [showDate, setShowDate] = useState(new Date());
@@ -54,9 +56,27 @@ function App(props) {
     <>
       <SafeAreaView style={styles.root}>
         <Header {...props} />
-        <Pages style={{flex: 1, backgroundColor: 'yellow'}}>
+        <Pages
+          style={{flex: 1, backgroundColor: 'yellow'}}
+          startPage={showDate.getDate()}
+          ref={refPages}
+          onScrollEnd={() => {
+            console.log(refPages.current.activeIndex);
+            refPages.current?.isDecelerating((data) => {
+              console.log(data);
+              return true;
+            });
+          }}>
           {getMonthDatesFromShow(showDate).map((date, index) => (
-            <View key={`page_${index}`} style={{flex: 1, margin: 20}}>
+            <View
+              key={`page_${index}`}
+              style={{
+                flex: 1,
+                margin: 20,
+                backgroundColor: 'white',
+                borderRadius: 5,
+                elevation: 5,
+              }}>
               <Text>{date}</Text>
             </View>
           ))}
