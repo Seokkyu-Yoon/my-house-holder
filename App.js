@@ -19,7 +19,6 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import env from './env';
 import {Home} from './views';
-import {SignIn} from './components';
 
 GoogleSignin.configure({
   webClientId: env.google.webclientId,

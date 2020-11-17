@@ -1,4 +1,4 @@
-import income from './income';
-import spend from './spend';
+import ledger from './ledger';
 
-export default {income, spend};
+export {ledger};
+export default {ledger};

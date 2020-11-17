@@ -33,7 +33,7 @@ function App(props) {
     <>
       <SafeAreaView style={styles.root}>
         <Header {...props} />
-        <DateHolder date={showDate} setDate={setShowDate} />
+        <DateHolder user={props.user} date={showDate} setDate={setShowDate} />
       </SafeAreaView>
     </>
   );
