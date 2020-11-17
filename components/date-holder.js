@@ -1,16 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import {
   Animated,
-  Dimensions,
+  FlatList,
   StyleSheet,
   Text,
   TouchableHighlight,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import DateTimePicker from 'react-native-modal-datetime-picker';
+
 import {getFormattedDate} from '../core/date';
 
-const SCREEN_WIDTH = Dimensions.get('screen').width;
 const styles = StyleSheet.create({
   holder: {
     flex: 1,
@@ -70,13 +71,29 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
   },
+  list: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
 });
+
+function renderItem({item}) {
+  return (
+    <View>
+      <Text>{item.title}</Text>
+      <Text>{item.content}</Text>
+      <Text>{`${item.cost}원`}</Text>
+    </View>
+  );
+}
 
 function Card(props) {
   const showDate = new Date(props.date);
   return (
     <Animated.View style={[styles.card, props.style]}>
-      <Text style={styles.date}>{getFormattedDate(showDate)}</Text>
+      <TouchableWithoutFeedback onPress={props.showModal}>
+        <Text style={styles.date}>{getFormattedDate(showDate)}</Text>
+      </TouchableWithoutFeedback>
       <View style={styles.holderTouchable}>
         <Text style={[styles.textContent, styles.textColorIncome]}>0원</Text>
         <TouchableHighlight
@@ -93,16 +110,22 @@ function Card(props) {
           <Text style={styles.plus}>+</Text>
         </TouchableHighlight>
       </View>
+      <FlatList
+        style={styles.list}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+      />
     </Animated.View>
   );
 }
 
 function App(props) {
   const [currDate, setCurrDate] = useState(new Date(props.date));
+  const [dateTimeModalVisible, setDateTimeModalVisible] = useState(false);
   const animate = new Animated.Value(0);
 
   useEffect(() => {
-    if (currDate === props.date) {
+    if (getFormattedDate(currDate) === getFormattedDate(props.date)) {
       return;
     }
     let unmounted = false;
@@ -114,7 +137,8 @@ function App(props) {
       if (unmounted) {
         return;
       }
-      setCurrDate(props.date);
+      setCurrDate(new Date(props.date));
+      setDateTimeModalVisible(false);
     });
     return () => {
       unmounted = true;
@@ -123,6 +147,14 @@ function App(props) {
 
   return (
     <View style={styles.holder}>
+      <DateTimePicker
+        isVisible={dateTimeModalVisible}
+        date={props.date}
+        onConfirm={(date) => {
+          props.setDate(new Date(date));
+        }}
+        onCancel={() => setDateTimeModalVisible(false)}
+      />
       <Card
         style={[
           styles.card,
@@ -131,7 +163,7 @@ function App(props) {
               {
                 translateY: animate.interpolate({
                   inputRange: [0, 1],
-                  outputRange: [0, 100],
+                  outputRange: [0, 300],
                 }),
               },
             ],
@@ -142,6 +174,7 @@ function App(props) {
           },
         ]}
         date={currDate}
+        showModal={() => setDateTimeModalVisible(true)}
       />
       <Card
         style={[
@@ -154,6 +187,7 @@ function App(props) {
           },
         ]}
         date={props.date}
+        showModal={() => setDateTimeModalVisible(true)}
       />
     </View>
   );

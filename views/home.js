@@ -21,26 +21,6 @@ function goToToday(today, setShowDate) {
   setShowDate(today);
 }
 
-function getMonthDatesFromShow(showDate) {
-  const fromDate = new Date(showDate);
-  const toDate = new Date(showDate);
-  fromDate.setDate(1);
-  toDate.setMonth(showDate.getMonth() + 1, 0);
-
-  const dates = [];
-  while (fromDate <= toDate) {
-    dates.push(getFormattedDate(fromDate));
-    fromDate.setDate(fromDate.getDate() + 1);
-  }
-  return dates;
-}
-
-function getFormattedShowDate(showDate) {
-  return `${getStrYear(showDate)}년 ${getStrMonth(showDate)}월`;
-}
-
-const refPages = createRef();
-
 function App(props) {
   const [today, setToday] = useState(new Date());
   const [showDate, setShowDate] = useState(new Date());
@@ -53,7 +33,7 @@ function App(props) {
     <>
       <SafeAreaView style={styles.root}>
         <Header {...props} />
-        <DateHolder date={showDate} />
+        <DateHolder date={showDate} setDate={setShowDate} />
       </SafeAreaView>
     </>
   );
