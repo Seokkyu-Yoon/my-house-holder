@@ -51,15 +51,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  textInputCost: {
-    textAlign: 'right',
-  },
   textAdd: {
     color: 'royalblue',
   },
   textInput: {
     flex: 1,
     marginHorizontal: 10,
+    textAlign: 'right',
   },
   textInputMultiLine: {
     height: 90,
@@ -135,6 +133,7 @@ function App(props) {
               style={styles.textInput}
               value={title}
               placeholder="제목을 입력해주세요"
+              maxLength={12}
               onChangeText={setTitle}
             />
           </View>
@@ -143,7 +142,6 @@ function App(props) {
             <TextInput
               style={[styles.textInput, styles.textInputMultiLine]}
               multiline={true}
-              numberOfLines={4}
               value={content}
               placeholder="내용을 입력해주세요"
               onChangeText={setContent}
@@ -152,10 +150,11 @@ function App(props) {
           <View style={styles.holderItem}>
             <Text style={styles.text}>금액</Text>
             <TextInput
-              style={[styles.textInput, styles.textInputCost]}
+              style={styles.textInput}
               keyboardType="number-pad"
-              maxLength={20}
+              maxLength={15}
               value={textCost}
+              placeholder="금액을 입력해주세요"
               onChangeText={setTextCost}
             />
             <Text style={styles.text}>원</Text>

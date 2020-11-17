@@ -10,7 +10,6 @@ import {
   View,
 } from 'react-native';
 import DismissKeyboard from './dismiss-keyboard';
-import {getFormattedDate} from '../core/date';
 
 const styles = StyleSheet.create({
   holder: {

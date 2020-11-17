@@ -33,7 +33,7 @@ function App(props) {
     animation.setValue(0);
     Animated.timing(animation, {
       toValue: 1,
-      duration: 1500,
+      duration: 1000,
       useNativeDriver: true,
     }).start(() => {
       setPrevDate(props.date);
