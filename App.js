@@ -13,12 +13,10 @@ import auth from '@react-native-firebase/auth';
 import {GoogleSignin, statusCodes} from '@react-native-community/google-signin';
 
 import RNExitApp from 'react-native-exit-app';
-import 'react-native-gesture-handler';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
 
 import env from './env';
-import {Home} from './views';
+import Views from './views';
+import {Header} from './components';
 
 GoogleSignin.configure({
   webClientId: env.google.webclientId,
@@ -65,10 +63,20 @@ signInGoogle().catch((err) => {
   );
 });
 
-const Stack = createStackNavigator();
-
 function App() {
   const [user, setUser] = useState(null);
+
+  const [navigation, setNavigation] = useState({
+    name: 'Home',
+    navigate,
+  });
+
+  function navigate(pageName) {
+    setNavigation({
+      name: pageName,
+      navigate,
+    });
+  }
 
   useEffect(() => {
     let unmounted = false;
@@ -89,17 +97,22 @@ function App() {
   }, [user]);
 
   if (user === null) {
-    return <View />;
+    return null;
   }
+
   return (
     <>
-      <NavigationContainer>
-        <Stack.Navigator headerMode="none" initialRouteName="home">
-          <Stack.Screen name="Home">
-            {(props) => <Home {...props} user={user} />}
-          </Stack.Screen>
-        </Stack.Navigator>
-      </NavigationContainer>
+      <Header navigation={navigation} />
+      <Views.Home
+        user={user}
+        navigation={navigation}
+        visible={navigation.name === 'Home'}
+      />
+      <Views.Statistic
+        user={user}
+        navigation={navigation}
+        visible={navigation.name === 'Statistic'}
+      />
     </>
   );
 }

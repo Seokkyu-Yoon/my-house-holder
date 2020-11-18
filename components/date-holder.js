@@ -5,9 +5,9 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 
 import {getFormattedDate} from '../core/date';
 import {ledger} from '../firebase';
-import CostModal from './cost-modal';
 import DateCard from './date-card';
-import ItemModal from './item-modal';
+import CostModal from './modal-cost';
+import ItemModal from './modal-item';
 
 const styles = StyleSheet.create({
   holder: {
@@ -17,10 +17,10 @@ const styles = StyleSheet.create({
 
 function App(props) {
   const [dummy, setDummy] = useState(false);
-  const [dateTimeModalVisible, setDateTimeModalVisible] = useState(false);
-  const [incomeModalVisible, setIncomeModalVisible] = useState(false);
-  const [expenditureModalVisible, setExpenditureModalVisible] = useState(false);
-  const [itemModalVisible, setItemModalVisible] = useState(false);
+  const [modalVisibleDateTime, setModalVisibleDateTime] = useState(false);
+  const [modalVisibleGain, setModalVisibleGain] = useState(false);
+  const [modalVisibleLoss, setModalVisibleLoss] = useState(false);
+  const [modalVisibleItem, setModalVisibleItem] = useState(false);
   const [selectedItem, setSelectedItem] = useState({});
 
   const [prevDate, setPrevDate] = useState(props.date);
@@ -43,53 +43,53 @@ function App(props) {
   return (
     <View style={styles.holder}>
       <DateTimePicker
-        isVisible={dateTimeModalVisible}
+        isVisible={modalVisibleDateTime}
         date={props.date}
         onConfirm={(date) => {
-          setDateTimeModalVisible(false);
+          setModalVisibleDateTime(false);
           if (getFormattedDate(date) !== getFormattedDate(props.date)) {
             props.setDate(new Date(date));
           }
         }}
-        onCancel={() => setDateTimeModalVisible(false)}
+        onCancel={() => setModalVisibleDateTime(false)}
       />
       <Modal
         animationType="fade"
         transparent={true}
-        visible={incomeModalVisible}
-        onRequestClose={() => setIncomeModalVisible(false)}>
+        visible={modalVisibleGain}
+        onRequestClose={() => setModalVisibleGain(false)}>
         <CostModal
           date={props.date}
           add={(data) => ledger.add(props.user, data)}
-          close={() => setIncomeModalVisible(false)}
+          close={() => setModalVisibleGain(false)}
           refresh={() => setDummy(!dummy)}
-          income
+          gain
         />
       </Modal>
       <Modal
         animationType="fade"
         transparent={true}
-        visible={expenditureModalVisible}
-        onRequestClose={() => setExpenditureModalVisible(false)}>
+        visible={modalVisibleLoss}
+        onRequestClose={() => setModalVisibleLoss(false)}>
         <CostModal
           date={props.date}
           type="지출"
           add={(data) => ledger.add(props.user, data)}
-          close={() => setExpenditureModalVisible(false)}
+          close={() => setModalVisibleLoss(false)}
           refresh={() => setDummy(!dummy)}
-          expenditure
+          loss
         />
       </Modal>
       <Modal
         animationType="fade"
         transparent={true}
-        visible={itemModalVisible}
-        onRequestClose={() => setItemModalVisible(false)}>
+        visible={modalVisibleItem}
+        onRequestClose={() => setModalVisibleItem(false)}>
         <ItemModal
           {...selectedItem}
           update={(data) => ledger.update(selectedItem.id, data)}
           remove={() => ledger.remove(selectedItem.id)}
-          close={() => setItemModalVisible(false)}
+          close={() => setModalVisibleItem(false)}
           refresh={() => setDummy(!dummy)}
         />
       </Modal>
@@ -104,10 +104,10 @@ function App(props) {
         date={props.date}
         dummy={dummy}
         setItem={setSelectedItem}
-        showItemModal={() => setItemModalVisible(true)}
-        showDateTimeModal={() => setDateTimeModalVisible(true)}
-        showIncomeModal={() => setIncomeModalVisible(true)}
-        showExpenditureModal={() => setExpenditureModalVisible(true)}
+        showModalDateTime={() => setModalVisibleDateTime(true)}
+        showModalGain={() => setModalVisibleGain(true)}
+        showModalItem={() => setModalVisibleItem(true)}
+        showModalLoss={() => setModalVisibleLoss(true)}
       />
       <DateCard
         style={{
@@ -128,10 +128,10 @@ function App(props) {
         date={prevDate}
         dummy={dummy}
         setItem={setSelectedItem}
-        showItemModal={() => setItemModalVisible(true)}
-        showDateTimeModal={() => setDateTimeModalVisible(true)}
-        showIncomeModal={() => setIncomeModalVisible(true)}
-        showExpenditureModal={() => setExpenditureModalVisible(true)}
+        showModalDateTime={() => setModalVisibleDateTime(true)}
+        showModalGain={() => setModalVisibleGain(true)}
+        showModalItem={() => setModalVisibleItem(true)}
+        showModalLoss={() => setModalVisibleLoss(true)}
       />
     </View>
   );

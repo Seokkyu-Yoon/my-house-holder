@@ -64,21 +64,21 @@ const styles = StyleSheet.create({
   },
 });
 
-function getTitle({income, expenditure}) {
-  if (income) {
+function getTitle({gain, loss}) {
+  if (gain) {
     return '수익';
   }
-  if (expenditure) {
+  if (loss) {
     return '지출';
   }
   throw new Error('정해진 cost-modal 요청이 아닙니다');
 }
 
-function getCostSign({income, expenditure}) {
-  if (income) {
+function getCostSign({gain, loss}) {
+  if (gain) {
     return 1;
   }
-  if (expenditure) {
+  if (loss) {
     return -1;
   }
   return 0;

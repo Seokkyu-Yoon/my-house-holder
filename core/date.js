@@ -12,7 +12,25 @@ function getFormattedDate(date) {
   return `${getStrYear(date)}-${getStrMonth(date)}-${getStrDate(date)}`;
 }
 
-export {getStrYear, getStrMonth, getStrDate, getFormattedDate};
-console.log(exports);
+function getMonthDates(year, month) {
+  const dates = [];
+  const strYear = String(year).padStart(4, '0');
+  const strMonth = String(month).padStart(2, '0');
+  const from = new Date(`${strYear}-${strMonth}-01`);
 
-export default {getStrYear, getStrMonth, getStrDate, getFormattedDate};
+  do {
+    dates.push(getFormattedDate(from));
+    from.setDate(from.getDate() + 1);
+  } while (from.getDate() > 1);
+
+  return dates;
+}
+export {getStrYear, getStrMonth, getStrDate, getFormattedDate, getMonthDates};
+
+export default {
+  getStrYear,
+  getStrMonth,
+  getStrDate,
+  getFormattedDate,
+  getMonthDates,
+};

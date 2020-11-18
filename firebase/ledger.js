@@ -2,26 +2,67 @@ import firestore from '@react-native-firebase/firestore';
 
 const COLLECTION = 'ledger';
 
+async function processDocs(user, docs) {
+  const processedData = [];
+  for (const doc of docs) {
+    const docData = await doc.data();
+    if (docData.uid !== user.uid) {
+      continue;
+    }
+    processedData.push({
+      id: doc.id,
+      ...docData,
+    });
+  }
+  processedData.sort((a, b) => a.timestamp - b.timestamp);
+  return processedData;
+}
 async function get(user, data) {
-  const doucmentSnapshot = await firestore()
+  const documentSnapshot = await firestore()
     .collection(COLLECTION)
-    .where('uid', '==', user.uid)
     .where('date', '==', data.date);
 
-  const {docs} = await doucmentSnapshot.get();
-  return await Promise.all(
-    docs.map(async (doc) => {
-      const docData = await doc.data();
-      return {
-        id: doc.id,
-        ...docData,
-      };
-    }),
-  );
+  const {docs} = await documentSnapshot.get();
+  const result = await processDocs(user, docs);
+  return result;
 }
 
+async function getMonthly(user, data) {
+  const strYear = String(data.year).padStart(4, '0');
+  const strMonth = String(data.month).padStart(2, '0');
+
+  const from = new Date(`${strYear}-${strMonth}-01T00:00:00Z`);
+  const to = new Date(from);
+  to.setMonth(data.month);
+
+  const documentSnapshot = await firestore()
+    .collection(COLLECTION)
+    .where('timestamp', '<', to)
+    .where('timestamp', '>', from);
+
+  const {docs} = await documentSnapshot.get();
+  const result = await processDocs(user, docs);
+  return result;
+}
+
+async function getYearly(user, data) {
+  const strYear = String(data.year).padStart(4, '0');
+
+  const from = new Date(`${strYear}-01-01T00:00:00Z`);
+  const to = new Date(from);
+  to.setFullYear(from.getFullYear() + 1);
+
+  const documentSnapshot = await firestore()
+    .collection(COLLECTION)
+    .where('timestamp', '<', to)
+    .where('timestamp', '>', from);
+
+  const {docs} = await documentSnapshot.get();
+  const result = await processDocs(user, docs);
+  return result;
+}
 /**
- * This function add firebase.income
+ * This function add firebase
  * @param {Object} user
  * @param {String} user.uid
  * @param {Date} data.date
@@ -31,7 +72,7 @@ async function get(user, data) {
  */
 async function add(user, data) {
   if (typeof data !== 'object') {
-    throw new Error('type of expenditure data must object');
+    throw new Error('type of data must object');
   }
   if (typeof data.date !== 'string') {
     throw new Error('data.date is not allowed');
@@ -51,13 +92,14 @@ async function add(user, data) {
     title: data.title,
     content: data.content,
     cost: data.cost,
+    timestamp: new Date(),
   });
 }
 
 async function update(docId, data) {
   const updateData = {};
   if (typeof data !== 'object') {
-    throw new Error('type of expenditure data must object');
+    throw new Error('type of data must object');
   }
   if (typeof data.date === 'string') {
     updateData.date = data.date;
@@ -80,6 +122,8 @@ async function remove(docId) {
 
 export default {
   get,
+  getMonthly,
+  getYearly,
   add,
   update,
   remove,

@@ -12,21 +12,16 @@
   "dependencies": {
     "@react-native-community/datetimepicker": "^3.0.4",
     "@react-native-community/google-signin": "^5.0.0",
-    "@react-native-community/masked-view": "^0.1.10",
     "@react-native-firebase/app": "^9.0.0",
     "@react-native-firebase/auth": "^9.3.5",
     "@react-native-firebase/firestore": "^7.10.3",
-    "@react-navigation/native": "^5.8.9",
-    "@react-navigation/stack": "^5.12.6",
+    "@react-native-picker/picker": "^1.9.2",
     "events": "^3.2.0",
     "react": "16.13.1",
     "react-native": "0.63.3",
+    "react-native-anchor-point": "^1.0.1",
     "react-native-exit-app": "^1.1.0",
-    "react-native-gesture-handler": "^1.8.0",
-    "react-native-modal-datetime-picker": "^9.1.0",
-    "react-native-reanimated": "^1.13.1",
-    "react-native-safe-area-context": "^3.1.9",
-    "react-native-screens": "^2.14.0"
+    "react-native-modal-datetime-picker": "^9.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",

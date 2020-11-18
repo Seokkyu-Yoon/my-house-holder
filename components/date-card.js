@@ -34,11 +34,11 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: 5,
   },
-  textColorIncome: {
-    color: 'green',
+  textColorGain: {
+    color: 'seagreen',
   },
-  textColorSpend: {
-    color: 'red',
+  textColorLoss: {
+    color: 'crimson',
   },
   textColorTotal: {
     color: 'black',
@@ -58,11 +58,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  plusTouchableIncome: {
-    backgroundColor: 'green',
+  plusTouchableGain: {
+    backgroundColor: 'seagreen',
   },
-  plusTouchableSpend: {
-    backgroundColor: 'red',
+  plusTouchableLoss: {
+    backgroundColor: 'crimson',
   },
   plus: {
     fontSize: 30,
@@ -72,31 +72,49 @@ const styles = StyleSheet.create({
   },
   list: {
     flex: 1,
-    marginTop: 20,
-    marginHorizontal: 20,
+    margin: 20,
+  },
+  holderRenderItem: {
+    padding: 10,
+    borderRadius: 10,
+  },
+  renderItemTouchable: {
+    marginBottom: 10,
+    borderRadius: 10,
+    elevation: 5,
+  },
+  renderItemTitle: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  renderItemCost: {
+    color: 'white',
+    textAlign: 'right',
   },
 });
 
-function renderItem(item, setItem, showItemModal) {
+function renderItem(item, setItem, showModalItem) {
+  const backgroundColor = item.cost > 0 ? 'seagreen' : 'crimson';
   return (
     <TouchableHighlight
+      style={styles.renderItemTouchable}
       underlayColor="gainsboro"
       onPress={() => {
-        console.log(item);
         setItem(item);
-        showItemModal(true);
+        showModalItem(true);
       }}>
-      <View>
-        <Text>{item.title}</Text>
-        <Text>{`${item.cost}원`}</Text>
+      <View style={[styles.holderRenderItem, {backgroundColor}]}>
+        <Text style={styles.renderItemTitle}>{item.title}</Text>
+        <Text style={styles.renderItemCost}>{`${item.cost}원`}</Text>
       </View>
     </TouchableHighlight>
   );
 }
 
 function App(props) {
-  const [incomes, setIncomes] = useState([]);
-  const [expenditures, setExpenditures] = useState([]);
+  const [gains, setGains] = useState([]);
+  const [losses, setLosses] = useState([]);
   const [all, setAll] = useState([]);
 
   useEffect(() => {
@@ -108,8 +126,8 @@ function App(props) {
         if (unmounted) {
           return;
         }
-        setIncomes(results.filter(({cost}) => cost > 0));
-        setExpenditures(results.filter(({cost}) => cost < 0));
+        setGains(results.filter(({cost}) => cost > 0));
+        setLosses(results.filter(({cost}) => cost < 0));
         setAll(results);
       })
       .catch(console.error);
@@ -120,26 +138,26 @@ function App(props) {
 
   return (
     <Animated.View style={[styles.card, props.style]}>
-      <TouchableWithoutFeedback onPress={props.showDateTimeModal}>
+      <TouchableWithoutFeedback onPress={props.showModalDateTime}>
         <Text style={styles.date}>{getFormattedDate(props.date)}</Text>
       </TouchableWithoutFeedback>
       <View style={styles.holderTouchable}>
-        <Text style={[styles.textContent, styles.textColorIncome]}>
-          {incomes.reduce((acc, {cost}) => acc + cost, 0)}원
+        <Text style={[styles.textContent, styles.textColorGain]}>
+          {gains.reduce((acc, {cost}) => acc + cost, 0)}원
         </Text>
         <TouchableHighlight
-          style={[styles.plusTouchable, styles.plusTouchableIncome]}
-          onPress={props.showIncomeModal}>
+          style={[styles.plusTouchable, styles.plusTouchableGain]}
+          onPress={props.showModalGain}>
           <Text style={styles.plus}>+</Text>
         </TouchableHighlight>
       </View>
       <View style={styles.holderTouchable}>
-        <Text style={[styles.textContent, styles.textColorSpend]}>
-          {expenditures.reduce((acc, {cost}) => acc + cost, 0)}원
+        <Text style={[styles.textContent, styles.textColorLoss]}>
+          {losses.reduce((acc, {cost}) => acc + cost, 0)}원
         </Text>
         <TouchableHighlight
-          style={[styles.plusTouchable, styles.plusTouchableSpend]}
-          onPress={props.showExpenditureModal}>
+          style={[styles.plusTouchable, styles.plusTouchableLoss]}
+          onPress={props.showModalLoss}>
           <Text style={styles.plus}>+</Text>
         </TouchableHighlight>
       </View>
@@ -152,7 +170,7 @@ function App(props) {
         style={styles.list}
         data={all}
         renderItem={({item}) =>
-          renderItem(item, props.setItem, props.showItemModal)
+          renderItem(item, props.setItem, props.showModalItem)
         }
         keyExtractor={(item) => item.id}
       />
