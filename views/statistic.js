@@ -130,7 +130,6 @@ function renderItem(item, setItem, showModalItem) {
 }
 
 function App(props) {
-  const [dummy, setDummy] = useState(false);
   const [year, setYear] = useState(`${new Date().getFullYear()}`);
   const [month, setMonth] = useState(`${new Date().getMonth() + 1}`);
   const [gainYearly, setGainYearly] = useState(0);
@@ -182,7 +181,7 @@ function App(props) {
     return () => {
       unmounted = true;
     };
-  }, [props.user, year]);
+  }, [props.refreshMonitor, props.user, props.visible, year]);
 
   useEffect(() => {
     let unmounted = false;
@@ -215,7 +214,7 @@ function App(props) {
     return () => {
       unmounted = true;
     };
-  }, [props.user, year, month]);
+  }, [props.refreshMonitor, props.user, props.visible, year, month]);
 
   if (props.user === null) {
     return null;
@@ -233,7 +232,7 @@ function App(props) {
           update={(data) => ledger.update(selectedItem.id, data)}
           remove={() => ledger.remove(selectedItem.id)}
           close={() => setModalVisibleItem(false)}
-          refresh={() => setDummy(!dummy)}
+          refresh={props.refresh}
         />
       </Modal>
       <Animated.View

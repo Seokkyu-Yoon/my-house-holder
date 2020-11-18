@@ -65,6 +65,7 @@ signInGoogle().catch((err) => {
 
 function App() {
   const [user, setUser] = useState(null);
+  const [dummy, setDummy] = useState(false);
 
   const [navigation, setNavigation] = useState({
     name: 'Home',
@@ -107,11 +108,15 @@ function App() {
         user={user}
         navigation={navigation}
         visible={navigation.name === 'Home'}
+        refreshMonitor={dummy}
+        refresh={() => setDummy(!dummy)}
       />
       <Views.Statistic
         user={user}
         navigation={navigation}
         visible={navigation.name === 'Statistic'}
+        refreshMonitor={dummy}
+        refresh={() => setDummy(!dummy)}
       />
     </>
   );

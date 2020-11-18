@@ -134,7 +134,7 @@ function App(props) {
     return () => {
       unmounted = true;
     };
-  }, [props.dummy, props.date, props.user]);
+  }, [props.refreshMonitor, props.date, props.user]);
 
   return (
     <Animated.View style={[styles.card, props.style]}>

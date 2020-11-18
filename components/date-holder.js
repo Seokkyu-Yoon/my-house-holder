@@ -62,7 +62,7 @@ function App(props) {
           date={props.date}
           add={(data) => ledger.add(props.user, data)}
           close={() => setModalVisibleGain(false)}
-          refresh={() => setDummy(!dummy)}
+          refresh={props.refresh}
           gain
         />
       </Modal>
@@ -76,7 +76,7 @@ function App(props) {
           type="지출"
           add={(data) => ledger.add(props.user, data)}
           close={() => setModalVisibleLoss(false)}
-          refresh={() => setDummy(!dummy)}
+          refresh={props.refresh}
           loss
         />
       </Modal>
@@ -90,7 +90,7 @@ function App(props) {
           update={(data) => ledger.update(selectedItem.id, data)}
           remove={() => ledger.remove(selectedItem.id)}
           close={() => setModalVisibleItem(false)}
-          refresh={() => setDummy(!dummy)}
+          refresh={props.refresh}
         />
       </Modal>
       <DateCard
@@ -102,7 +102,7 @@ function App(props) {
         }}
         user={props.user}
         date={props.date}
-        dummy={dummy}
+        refreshMonitor={props.refreshMonitor}
         setItem={setSelectedItem}
         showModalDateTime={() => setModalVisibleDateTime(true)}
         showModalGain={() => setModalVisibleGain(true)}
@@ -126,7 +126,7 @@ function App(props) {
         }}
         user={props.user}
         date={prevDate}
-        dummy={dummy}
+        refreshMonitor={props.refreshMonitor}
         setItem={setSelectedItem}
         showModalDateTime={() => setModalVisibleDateTime(true)}
         showModalGain={() => setModalVisibleGain(true)}

@@ -51,7 +51,13 @@ function App(props) {
             ],
           },
         ]}>
-        <DateHolder user={props.user} date={showDate} setDate={setShowDate} />
+        <DateHolder
+          user={props.user}
+          date={showDate}
+          setDate={setShowDate}
+          refreshMonitor={props.refreshMonitor}
+          refresh={props.refresh}
+        />
       </Animated.View>
     </>
   );
