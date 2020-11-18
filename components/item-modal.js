@@ -108,12 +108,22 @@ function App(props) {
   const [textCost, setTextCost] = useState(String(Math.abs(props.cost)));
 
   useEffect(() => {
+    let unmounted = false;
     Keyboard.addListener('keyboardDidShow', () => {
+      if (unmounted) {
+        return;
+      }
       setKeyBoardOpened(true);
     });
     Keyboard.addListener('keyboardDidHide', () => {
+      if (unmounted) {
+        return;
+      }
       setKeyBoardOpened(false);
     });
+    return () => {
+      unmounted = true;
+    };
   }, []);
 
   return (

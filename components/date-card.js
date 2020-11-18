@@ -99,16 +99,22 @@ function App(props) {
   const [all, setAll] = useState([]);
 
   useEffect(() => {
+    let unmounted = false;
     const date = getFormattedDate(props.date);
     ledger
       .get(props.user, {date})
       .then((results) => {
+        if (unmounted) {
+          return;
+        }
         setIncomes(results.filter(({cost}) => cost > 0));
         setExpenditures(results.filter(({cost}) => cost < 0));
         setAll(results);
       })
       .catch(console.error);
-    console.log('refresh');
+    return () => {
+      unmounted = true;
+    };
   }, [props.dummy, props.date, props.user]);
 
   return (
