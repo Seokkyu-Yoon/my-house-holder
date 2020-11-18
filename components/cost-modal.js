@@ -84,19 +84,6 @@ function getCostSign({income, expenditure}) {
   return 0;
 }
 
-function getAlarmBodyString(date, title, content, cost) {
-  return [
-    ' - 날짜',
-    getFormattedDate(date),
-    ' - 제목',
-    title,
-    '- 내용',
-    content,
-    ' - 금액',
-    `${cost}원`,
-  ].join('\n');
-}
-
 function App(props) {
   const [keyboardOpened, setKeyBoardOpened] = useState(false);
   const [title, setTitle] = useState('');
@@ -189,33 +176,19 @@ function App(props) {
                   throw new Error('cost sign is not defined to add');
                 }
                 const cost = costSign * Number(textCost);
-                Alert.alert(
-                  '추가 확인',
-                  getAlarmBodyString(props.date, title, content, cost),
-                  [
-                    {
-                      text: '취소',
-                    },
-                    {
-                      text: '확인',
-                      onPress: () => {
-                        const data = {
-                          date: getFormattedDate(props.date),
-                          title,
-                          content,
-                          cost,
-                        };
-                        props
-                          .add(data)
-                          .then(() => {
-                            props.close();
-                            props.refresh();
-                          })
-                          .catch(console.error);
-                      },
-                    },
-                  ],
-                );
+                const data = {
+                  date: getFormattedDate(props.date),
+                  title,
+                  content,
+                  cost,
+                };
+                props
+                  .add(data)
+                  .then(() => {
+                    props.close();
+                    props.refresh();
+                  })
+                  .catch(console.error);
               }}>
               <Text style={[styles.textAdd, styles.text]}>추가</Text>
             </TouchableWithoutFeedback>

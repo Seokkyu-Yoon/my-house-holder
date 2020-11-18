@@ -57,7 +57,8 @@ const styles = StyleSheet.create({
     color: 'goldenrod',
   },
   textRemove: {
-    color: 'firebrick',
+    marginLeft: 20,
+    color: 'crimson',
   },
   textInput: {
     flex: 1,
@@ -86,19 +87,6 @@ function getCostSign({cost}) {
     return -1;
   }
   return 0;
-}
-
-function getAlarmBodyString(date, title, content, cost) {
-  return [
-    ' - 날짜',
-    date,
-    ' - 제목',
-    title,
-    '- 내용',
-    content,
-    ' - 금액',
-    `${cost}원`,
-  ].join('\n');
 }
 
 function App(props) {
@@ -192,33 +180,19 @@ function App(props) {
                   throw new Error('cost sign is not defined to add');
                 }
                 const cost = costSign * Number(textCost);
-                Alert.alert(
-                  '수정 확인',
-                  getAlarmBodyString(props.date, title, content, cost),
-                  [
-                    {
-                      text: '취소',
-                    },
-                    {
-                      text: '확인',
-                      onPress: () => {
-                        const data = {
-                          date: props.date,
-                          title,
-                          content,
-                          cost,
-                        };
-                        props
-                          .update(data)
-                          .then(() => {
-                            props.close();
-                            props.refresh();
-                          })
-                          .catch(console.error);
-                      },
-                    },
-                  ],
-                );
+                const data = {
+                  date: props.date,
+                  title,
+                  content,
+                  cost,
+                };
+                props
+                  .update(data)
+                  .then(() => {
+                    props.close();
+                    props.refresh();
+                  })
+                  .catch(console.error);
               }}>
               <Text style={[styles.textUpdate, styles.text]}>수정</Text>
             </TouchableWithoutFeedback>

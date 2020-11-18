@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
 function renderItem(item, setItem, showItemModal) {
   return (
     <TouchableHighlight
+      underlayColor="gainsboro"
       onPress={() => {
         console.log(item);
         setItem(item);
