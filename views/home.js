@@ -1,8 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Animated, Dimensions, Easing, StyleSheet} from 'react-native';
 
-import {withAnchorPoint} from 'react-native-anchor-point';
-
 import {DateHolder} from '../components';
 
 const styles = StyleSheet.create({
@@ -18,24 +16,6 @@ const styles = StyleSheet.create({
 
 function showToday(today, setShowDate) {
   setShowDate(today);
-}
-
-function getTransform(animation) {
-  const transform = {
-    transform: [
-      {
-        scale: animation,
-      },
-    ],
-  };
-  return withAnchorPoint(
-    transform,
-    {x: 1, y: 0},
-    {
-      width: Dimensions.get('screen').width,
-      height: Dimensions.get('screen').height - 128,
-    },
-  );
 }
 
 function App(props) {
@@ -57,7 +37,20 @@ function App(props) {
   }
   return (
     <>
-      <Animated.View style={[styles.root, getTransform(animation)]}>
+      <Animated.View
+        style={[
+          styles.root,
+          {
+            transform: [
+              {
+                translateX: animation.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [Dimensions.get('screen').width, 0],
+                }),
+              },
+            ],
+          },
+        ]}>
         <DateHolder user={props.user} date={showDate} setDate={setShowDate} />
       </Animated.View>
     </>

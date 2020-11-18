@@ -11,7 +11,6 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
-import {withAnchorPoint} from 'react-native-anchor-point';
 import {ModalItem} from '../components';
 import {ledger} from '../firebase';
 
@@ -86,24 +85,6 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
 });
-
-function getTransform(animation) {
-  const transform = {
-    transform: [
-      {
-        scale: animation,
-      },
-    ],
-  };
-  return withAnchorPoint(
-    transform,
-    {x: 1, y: 0},
-    {
-      width: Dimensions.get('screen').width,
-      height: Dimensions.get('screen').height - 128,
-    },
-  );
-}
 
 function getYearItems() {
   const items = [];
@@ -255,7 +236,20 @@ function App(props) {
           refresh={() => setDummy(!dummy)}
         />
       </Modal>
-      <Animated.View style={[styles.root, getTransform(animation)]}>
+      <Animated.View
+        style={[
+          styles.root,
+          {
+            transform: [
+              {
+                translateX: animation.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [Dimensions.get('screen').width, 0],
+                }),
+              },
+            ],
+          },
+        ]}>
         <View style={[styles.holderGroup, styles.holderYear]}>
           <View style={styles.holderPicker}>
             <Text style={styles.pickerText}>연도 선택</Text>
